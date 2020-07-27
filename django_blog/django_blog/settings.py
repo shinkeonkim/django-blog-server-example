@@ -42,10 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'member',
-    'board',
     'article',
-    'home',
+    'api',
+    'rest_framework',
+    'bootstrap4',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # 'rest_framework.permissions.IsAdminUser',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'django_blog.drf_defaults.DefaultResultsSetPagination',
+    'PAGE_SIZE': 50,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +71,7 @@ ROOT_URLCONF = 'django_blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'django_blog', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -51,7 +51,7 @@ def sign_in(request):
 # 로그아웃 기능
 def sign_out(request):
     auth.logout(request)
-    return render(request, '/')
+    return redirect('/')
 
 
 # def update_profile(request, user_id):
