@@ -12,11 +12,8 @@ singun11과 함께 춤을
 <div class="container">
     {%for article in articles_page %}
         {{article.title}} <br>
-        {{article.body}}
-        {% for image in article.images %}
-            <img src = "{{image.image.url }}" alt="아?" width = "100px">
-        {% endfor %}
-        {%endfor%}
+        {{article.body | safe}}
+    {%endfor%}
 </div>
 
 {% endblock %}

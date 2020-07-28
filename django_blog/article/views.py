@@ -6,34 +6,37 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
+import markdown
 
 @login_required
 def upload_article(request):
-    ImageFormSet = modelformset_factory(Images, form = ImageForm , extra = 1)
+    # ImageFormSet = modelformset_factory(Images, form = ImageForm , extra = 1)
 
     if request.method == "POST":
         form = ArticleForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset = Images.objects.none())
-        if form.is_valid() and formset.is_valid():
+        # formset = ImageFormSet(request.POST, request.FILES, queryset = Images.objects.none())
+        if form.is_valid(): # and formset.is_valid():
             article = form.save(commit=False)
             article.publisher = request.user
             article.save()
-            for form in formset.cleaned_data:
-                image = form['image']
-                photo = Images(article=article, image=image)
-                photo.save()
+            # for form in formset.cleaned_data:
+            #     image = form['image']
+            #     photo = Images(article=article, image=image)
+            #     photo.save()
             messages.success(request,
                              "Posted!")
             return redirect("/")
 
     else:
         form = ArticleForm()
-        formset = ImageFormSet(queryset=Images.objects.none())
+        # formset = ImageFormSet(queryset=Images.objects.none())
     return render(request, 'upload_article.html',
-                    {'ArticleForm': form, 'formset': formset})
+                    {'ArticleForm': form}) # , 'formset': formset
 
 
 def show_articles(request):
+    
+    md = markdown.Markdown(extensions=['extra'])
     articles = Article.objects.all()[::-1]
     paginator = Paginator(articles, 10)
     page= request.GET.get('page')
@@ -45,5 +48,6 @@ def show_articles(request):
 
     for i in articles:
         i.images = Images.objects.all().filter(article = i)
+        i.body = md.convert(i.body)
         
     return render(request, 'show_articles.html', {'articles':articles, 'articles_page' : articles_page, 'range' : [i for i in range(start, end+1)]})
